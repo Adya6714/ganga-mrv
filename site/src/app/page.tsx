@@ -471,7 +471,8 @@ function Extensions() {
         <p style={{ marginTop: 16, color: 'rgba(242,247,238,0.7)', marginBottom: 0 }}>
           Restructured into four subpackages by concern — <code>core/</code>, <code>extensions/</code>,{' '}
           <code>ml/</code>, <code>infra/</code> — after verifying zero regressions across all 15 tests.
-          See <a href={`${REPO}/blob/main/EXTENSIONS.md`} target="_blank" rel="noopener noreferrer">EXTENSIONS.md</a>{' '}
+          See{' '}
+          <a href={`${REPO}/blob/main/BOOK.md#appendix-b-extensions-status`} target="_blank" rel="noopener noreferrer">BOOK.md Appendix B</a>{' '}
           for the full catalogue including described-only items (Bayesian hierarchical model,
           Sentinel-2 NDVI, CEC correction) with stated reasons they cannot run on this dataset.
         </p>
@@ -573,8 +574,8 @@ function KeyDecisions() {
         <h2>Every judgment call is traceable.</h2>
         <p style={{ marginTop: 12, color: 'var(--color-text-muted)' }}>
           Full reasoning for each lives in{' '}
-          <a href={`${REPO}/blob/main/DECISIONS.md`} target="_blank" rel="noopener noreferrer">DECISIONS.md</a>{' '}
-          (cross-referenced to the BOOK.md chapter where the decision was made and verified).
+          <a href={`${REPO}/blob/main/BOOK.md#appendix-a-decisions-index`} target="_blank" rel="noopener noreferrer">BOOK.md Appendix A</a>{' '}
+          (cross-referenced to the chapter where the decision was made and verified).
         </p>
         <div className="card-grid card-grid--2" style={{ marginTop: 32 }}>
           {decisions.map((d) => (
@@ -622,10 +623,10 @@ function Footer() {
             </p>
             <ul className="footer-links">
               <li><a href={`${REPO}/blob/main/BOOK.md`} target="_blank" rel="noopener noreferrer">BOOK.md — full narrative</a></li>
-              <li><a href={`${REPO}/blob/main/DECISIONS.md`} target="_blank" rel="noopener noreferrer">DECISIONS.md — every judgment call</a></li>
-              <li><a href={`${REPO}/blob/main/EXTENSIONS.md`} target="_blank" rel="noopener noreferrer">EXTENSIONS.md — built vs described-only</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-a-decisions-index`} target="_blank" rel="noopener noreferrer">BOOK.md Appendix A — every judgment call</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-b-extensions-status`} target="_blank" rel="noopener noreferrer">BOOK.md Appendix B — built vs described-only</a></li>
               <li><a href={`${REPO}/blob/main/PART3_THINKING.md`} target="_blank" rel="noopener noreferrer">PART3_THINKING.md — written answers</a></li>
-              <li><a href={`${REPO}/blob/main/ASSIGNMENT_COMPLIANCE.md`} target="_blank" rel="noopener noreferrer">ASSIGNMENT_COMPLIANCE.md — requirement map</a></li>
+              <li><a href={`${REPO}/blob/main/README.md#where-the-assignments-requirements-live`} target="_blank" rel="noopener noreferrer">README.md — requirement map</a></li>
               <li><a href={`${REPO}/tree/main/src/erw`} target="_blank" rel="noopener noreferrer">src/erw/ — all 27 modules</a></li>
               <li><a href={`${REPO}/tree/main/tests`} target="_blank" rel="noopener noreferrer">tests/ — 15 passing tests</a></li>
             </ul>
