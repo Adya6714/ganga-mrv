@@ -6,7 +6,7 @@ assignment, on a synthetic 12-sample dataset ("Project Ganga").
 
 **→ [Read the full story](BOOK.md)** — every decision, test, and finding, chapter by chapter
 **→ [Part 3 written answers](PART3_THINKING.md)** — the assignment's required thinking section
-**→ [Live site](https://YOUR-VERCEL-URL.vercel.app)** — a walkthrough of the whole project
+**→ [Live site](https://site-eight-khaki-34.vercel.app)** — a walkthrough of the whole project
 
 ---
 
