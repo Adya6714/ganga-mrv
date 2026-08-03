@@ -1,0 +1,20 @@
+[
+  {
+    "subject_id": "GNG-MON-002<->GNG-BL-001",
+    "rule": "combined_validation_gates",
+    "threshold": 1.0,
+    "measured": 1.0,
+    "result": "PASS",
+    "config_hash": "0ea4fa796d5f",
+    "timestamp": "2026-08-03T07:54:46.927506"
+  },
+  {
+    "subject_id": "GNG-MON-001<->GNG-BL-002",
+    "rule": "combined_validation_gates",
+    "threshold": 1.0,
+    "measured": 1.0,
+    "result": "PASS",
+    "config_hash": "0ea4fa796d5f",
+    "timestamp": "2026-08-03T07:54:46.927563"
+  }
+]

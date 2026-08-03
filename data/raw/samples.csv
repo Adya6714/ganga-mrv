@@ -1,0 +1,13 @@
+sample_id,type,lat,lon,date,collector,barcode,plot_type
+GNG-BL-001,baseline,23.4512,87.3201,2024-10-12,Sunil D,LB-24-4401,treatment
+GNG-BL-002,baseline,23.4515,87.3198,2024-10-12,Sunil D,LB-24-4402,treatment
+GNG-BL-003,baseline,23.4610,87.3305,2024-10-13,Meera J,LB-24-4403,control
+GNG-BL-004,baseline,23.4614,87.3310,2024-10-13,Meera J,LB-24-4404,control
+GNG-BL-005,baseline,0.0000,0.0000,2024-10-14,Sunil D,LB-24-4405,treatment
+GNG-MON-001,monitoring,23.4518,87.3195,2025-05-22,Sunil D,LB-25-5501,treatment
+GNG-MON-002,monitoring,23.4513,87.3200,2025-05-22,Sunil D,LB-25-5502,treatment
+GNG-MON-003,monitoring,23.4890,87.3610,2025-05-23,Rahul P,LB-25-5503,treatment
+GNG-MON-004,monitoring,23.4512,87.3201,2025-05-24,Sunil D,,treatment
+GNG-MON-005,monitoring,23.4612,87.3308,2025-05-25,Meera J,LB-25-5505,control
+GNG-BL-006,baseline,23.4512,87.3201,2025-05-24,,LB-25-5506,treatment
+GNG-MON-006,monitoring,23.4617,87.3312,2025-05-25,Meera J,LB-25-5507,control
