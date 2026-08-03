@@ -11,9 +11,9 @@ reload the whole mental model, or jump to a chapter to refresh one piece.
 Alt Carbon spreads crushed basalt rock on farmland (Enhanced Rock
 Weathering). As the rock dissolves, it reacts with dissolved CO2 in soil
 water and locks it away as stable bicarbonate — that's the carbon
-removal. To prove it happened, you compare soil chemistry *before* the
+removal. To prove it happened, you compare soil chemistry _before_ the
 rock was applied (a "baseline" sample) to soil chemistry some months
-*after* ("monitoring"), and look for enrichment in calcium and
+_after_ ("monitoring"), and look for enrichment in calcium and
 magnesium — the elements silicate rock releases when it weathers.
 
 **The core problem the formula has to solve:** you can't just compare
@@ -24,9 +24,9 @@ do with weathering.
 
 **The fix: Titanium as a ruler.** Ti doesn't react with CO2 — it's
 chemically inert in this context. If Ti moved between your baseline and
-monitoring sample, that tells you your *scoop* changed, not the
-*chemistry*. So instead of comparing raw Ca, you compare Ca *relative to
-Ti* in both samples. The change in that ratio is your real signal,
+monitoring sample, that tells you your _scoop_ changed, not the
+_chemistry_. So instead of comparing raw Ca, you compare Ca _relative to
+Ti_ in both samples. The change in that ratio is your real signal,
 because whatever noise moved Ti also moved Ca and Mg by the same
 proportion — and dividing by Ti cancels it out.
 
@@ -53,7 +53,7 @@ flat math would silently distort every distance calculation.
 **`io.py`** — loads both CSVs and joins them on barcode using an
 **outer join with `indicator=True`**. This was a deliberate choice: an
 inner join silently drops any row that doesn't match on both sides. The
-outer join keeps everything and tells you *how* each row matched — which
+outer join keeps everything and tells you _how_ each row matched — which
 is exactly what let us later find both `LB-25-5508` (a lab result with
 no matching sample) and `GNG-MON-004` (a sample with no barcode at all,
 so it can never join to anything).
@@ -75,6 +75,7 @@ outliers (Haversine, 500m), tracer stability (20% vs. plot-type mean),
 lab status.
 
 **Result: 8 issues across 5 root-cause samples/records.**
+
 - `GNG-BL-005`: zeroed GPS (0,0) — "Null Island," always a sentinel for
   missing data, never a real field location.
 - `GNG-MON-004`: no barcode recorded at all.
@@ -87,8 +88,8 @@ lab status.
   Ti deviation, and lab status "flagged."
 
 **The discipline that matters more than the count:** we explicitly
-verified *zero false flags*. `GNG-BL-005`'s date (2024-10-14) is
-*before* the application date (2024-10-15) — and we proved, with a
+verified _zero false flags_. `GNG-BL-005`'s date (2024-10-14) is
+_before_ the application date (2024-10-15) — and we proved, with a
 direct comparison, that it correctly does NOT trigger the late-baseline
 rule. This is now locked in permanently as `tests/test_quality.py`, a
 single regression test asserting exactly 8 issues, exactly these
@@ -116,7 +117,7 @@ whole candidate list, MON-004 claimed BL-001 first. That pushed
 
 We tested this concretely, not hypothetically: naive ordering (pair
 first on raw data) produced **1 valid treatment pair**. Pre-filtering
-samples with no lab match *before* pairing produced **2 valid treatment
+samples with no lab match _before_ pairing produced **2 valid treatment
 pairs** — because MON-002 got its rightful clean baseline (BL-001)
 instead of the broken one. That's a 100% difference in usable data from
 a single ordering decision the assignment brief treats as unambiguous
@@ -129,7 +130,7 @@ the failure mode of GPS-only pairing").
 
 ## Chapter 4: Validation, and a Real Bug We Caught in Our Own Code
 
-Part 2, Step 2 (`validation.py`) is a *second, independent* filter on
+Part 2, Step 2 (`validation.py`) is a _second, independent_ filter on
 top of geographic pairing — a pair can be geographically perfect and
 still be scientifically worthless. Four gates: pair-specific Ti
 deviation (>20%), baseline-after-application timing, lab status flagged
@@ -138,7 +139,7 @@ gate itself).
 
 **The bug:** `validate_all_pairs` used
 `joined.set_index("sample_id")` to look samples up quickly. But
-`set_index` *moves* that column into the row index — it's no longer a
+`set_index` _moves_ that column into the row index — it's no longer a
 regular column afterward. So the code tried `mon_row["sample_id"]` to
 build the result, and got `KeyError: 'sample_id'`. The fix: pass the IDs
 in explicitly from the caller (which already had them from
@@ -149,9 +150,9 @@ it changes what's still accessible as a column.
 **Important distinction, discovered later and worth remembering
 precisely:** this pair-specific Ti gate is DIFFERENT from Part 1's
 population-level tracer check. Part 1 compares one sample's Ti to the
-*mean Ti of its whole plot type* (fragile — contaminated by whatever
-outlier it's trying to catch). This gate compares Ti *between the two
-members of one specific pair* — a completely separate, and much more
+_mean Ti of its whole plot type_ (fragile — contaminated by whatever
+outlier it's trying to catch). This gate compares Ti _between the two
+members of one specific pair_ — a completely separate, and much more
 robust, comparison. Conflating these two in conversation was a mistake
 we made and later corrected (see Chapter 11).
 
@@ -200,13 +201,13 @@ subtracted directly.
 downward correction.
 
 **But the harder, more important part is the uncertainty.** You're
-subtracting two *uncertain* numbers, not two fixed ones. When you
+subtracting two _uncertain_ numbers, not two fixed ones. When you
 subtract two independent estimates, their variances **add** even though
 their means subtract (`Var(net) = Var(treatment) + Var(control)`). We
 propagated this correctly (using a conservative `df = min` of the two
 groups' degrees of freedom) and got a net 95% CI of
 **[-104.06, 183.05]** — a range that includes **zero**. That means: once
-you honestly account for uncertainty in *both* the treatment estimate
+you honestly account for uncertainty in _both_ the treatment estimate
 and the control estimate, you cannot statistically rule out that this
 project removed **no carbon at all**.
 
@@ -214,11 +215,12 @@ project removed **no carbon at all**.
 
 ## Chapter 8: Formal Significance Testing, and a Bug We Caught by Cross-Checking Results Against Each Other
 
-Two separate but related questions: *is* the observed effect
-significant, and *could* we have detected it at all given how noisy the
+Two separate but related questions: _is_ the observed effect
+significant, and _could_ we have detected it at all given how noisy the
 data is?
 
 **Significance (`significance.py`):**
+
 - One-sample t-test (treatment > 0): p=0.0078, significant — but this is
   the WRONG test. It completely ignores the control confound, so it
   answers "is there measurable enrichment at all," not "is there
@@ -239,12 +241,12 @@ deviation. This didn't make sense: if the true detectable-effect floor
 were only 7.87, how could a net effect of 39.49 come back
 non-significant? We caught the inconsistency by cross-checking two
 independently-computed results against each other rather than accepting
-either alone. **Root cause:** for a treatment-*vs-control* comparison,
+either alone. **Root cause:** for a treatment-_vs-control_ comparison,
 the correct noise scale is the **pooled** standard deviation across
 BOTH groups, not one alone — and control's std (15.85) is 8x larger,
 dominating the real detection noise. Corrected MDE = **44.95 t/ha**,
 which is now consistent with the picture: 44.95 exceeds the od
-effect of 39.49, which is *exactly why* Welch's test came back
+effect of 39.49, which is _exactly why_ Welch's test came back
 non-significant. Three independent methods (CI crossing zero, Welch's
 p=0.0857, MDE exceeding the observed effect) now agree.
 
@@ -258,7 +260,7 @@ line of evidence pointing the same direction.
 ## Chapter 9: Monte Carlo Sensitivity — Quantifying the "Denominator Problem"
 
 Session 1's literature research (Lithos Carbon) flagged that in a
-Ti-normalized ratio estimator, noise on the *denominator* (Ti itself)
+Ti-normalized ratio estimator, noise on the _denominator_ (Ti itself)
 can get amplified unpredictably, sometimes worse than noise on the
 mobile elements it's meant to stabilize.
 
@@ -275,7 +277,7 @@ problem" derived from our own code, not cited secondhand.
 
 ---
 
-## Chapter 10: Investigating *Why* the Control Is Non-Zero
+## Chapter 10: Investigating _Why_ the Control Is Non-Zero
 
 Having quantified the consequences of the control confound, we went
 hunting for its cause.
@@ -297,7 +299,7 @@ were collected October 2024 (post-monsoon), monitoring samples May 2025
 (pre-monsoon, dry season) — a full flood/dry cycle in rice paddies,
 where redox chemistry genuinely mobilizes Ca/Mg independent of any rock
 weathering. If true, the fix isn't a code change — it's a sampling
-*protocol* change (collect baseline and monitoring at matched points in
+_protocol_ change (collect baseline and monitoring at matched points in
 the seasonal cycle), which matters directly for Part 3 Q3's "what
 should engineering do about it."
 
@@ -305,7 +307,7 @@ should engineering do about it."
 
 ## Chapter 11: An Independent Chemical Signal — Si Stoichiometry
 
-Silicate minerals release Ca/Mg *and* Si together, in ratios fixed by
+Silicate minerals release Ca/Mg _and_ Si together, in ratios fixed by
 mineral chemistry (e.g. anorthite: 1 mol Ca per 2 mol Si; forsterite:
 2 mol Mg per 1 mol Si). Si is present in `lab_results.csv` but the
 required formula never uses it.
@@ -316,7 +318,7 @@ plausible range (~0.5-1.5) for basaltic silicate dissolution. This
 points toward a **non-silicate Ca/Mg source** — most plausibly
 agricultural lime or pre-existing soil carbonate, both common in managed
 rice paddies, both of which release Ca with **zero** accompanying Si.
-This is a *third* independent signal (alongside the control CDR and the
+This is a _third_ independent signal (alongside the control CDR and the
 significance testing) all converging on the same underlying concern:
 some fraction of measured "enrichment" may not be attributable to rock
 weathering at all.
@@ -341,9 +343,9 @@ lever** — it changes N (1 valid pair vs. 2), not just the mean.
 
 **This produced an important self-correction.** We had earlier claimed
 tightening the threshold to 10% would falsely flag `BL-002`. That's
-true — but only for Part 1's *population-mean-based* check
+true — but only for Part 1's _population-mean-based_ check
 (`quality.py`), which is contaminated by the very outlier it's supposed
-to catch. This multiverse test is on Part 2's *pair-specific* gate
+to catch. This multiverse test is on Part 2's _pair-specific_ gate
 (`validation.py`), and it's comfortably robust across all three tested
 thresholds — the valid pairs' own Ti deviations (~2%) are nowhere near
 any tested boundary. Two real findings, about two structurally different
@@ -360,7 +362,7 @@ exact number you tune it to.**
 (0.2–0.3) gives an implied application rate of **191–287 t basalt/ha**
 — about 5.5–8.2x typical real-world field rates (20–50 t/ha). This
 suggests the synthetic data generator inflated the signal — a property
-of the *data*, not evidence of a pipeline error. Worth stating precisely
+of the _data_, not evidence of a pipeline error. Worth stating precisely
 which one it implicates.
 
 **Rajmahal Traps Ti/Zr comparison:** this basalt plausibly comes from
@@ -368,7 +370,7 @@ the real, published Rajmahal Traps flood basalt formation directly
 underlying this part of eastern India. Published fresh-basalt Ti/Zr
 ratios sit in two known ranges (82–120 and 45–78). Observed soil Ti/Zr
 here: **19.63–19.81, mean 19.74** — well below both. This divergence is
-*expected*, not a red flag: soil Ti/Zr reflects a mix of parent rock plus
+_expected_, not a red flag: soil Ti/Zr reflects a mix of parent rock plus
 pre-existing soil matrix, not pure fresh rock. A real, citable external
 check almost nobody else would think to run.
 
@@ -377,7 +379,7 @@ published Lithos Carbon shorthand formula (`CO2 = 2.2×Ca + 3.62×Mg`)
 disagreed with our full-precision implementation by 0.085% — fully
 explained by the published constants being rounded to 2-3 significant
 figures (exact values: 2.19611 and 3.62073). A good example of writing
-a *tolerance-based* equivalence check correctly instead of naively
+a _tolerance-based_ equivalence check correctly instead of naively
 asserting exact equality.
 
 ---
@@ -421,7 +423,7 @@ correlated and interpolate an expected value with genuine uncertainty
 at each monitoring location. With only 2 clean baselines, we demonstrated
 BOTH sides of this deliberately: a stated (assumed) length scale gives
 sensible, spatially-differentiated predictions (16605.4±174.5 and
-16660.5±155.7). Letting the optimizer *estimate* the length scale from
+16660.5±155.7). Letting the optimizer _estimate_ the length scale from
 just 2 points collapses it toward zero — the model can't distinguish
 short-range from long-range correlation with so little data, so it
 degenerates to "ignore space entirely, report the mean." Reproduced
@@ -439,7 +441,7 @@ bit-for-bit identically on two machines. Median/MAD (robust z=96.45 for
 MON-003, nothing else even close) remains the more defensible choice on
 this small dataset — but IF is the right architecture at 5,000 samples
 where outliers aren't visually obvious. Building the sophisticated tool
-*and* arguing against using it here is a stronger signal than either alone.
+_and_ arguing against using it here is a stronger signal than either alone.
 
 ---
 
@@ -457,7 +459,7 @@ treatment-baseline centroid, the closest of all four classes, correctly
 matching its declared label. **BL-006 is chemically indistinguishable
 from a genuine treatment baseline.** This sharpened rather than
 weakened the forensic picture: the anomaly is narrowly located in
-*metadata* (the date field, missing collector, duplicate coordinates),
+_metadata_ (the date field, missing collector, duplicate coordinates),
 not smeared into the chemistry — a more precise diagnosis than
 originally claimed.
 
@@ -490,8 +492,8 @@ All 15 pass, independently reproduced on two machines.
 
 ## Chapter 18: The Digital Twin — The Correctness Proof
 
-Everything up to this point proves the pipeline behaves *sensibly* on
-the data we were given. This chapter proves it behaves *correctly* in
+Everything up to this point proves the pipeline behaves _sensibly_ on
+the data we were given. This chapter proves it behaves _correctly_ in
 general.
 
 **The method (`digital_twin.py`):** pick a known true CDR ourselves.
@@ -580,5 +582,66 @@ a crediting decision.** Not because the pipeline is wrong — the digital
 twin proves the math is correctly calibrated — but because N=2 is
 genuinely insufficient against the observed noise, and the control
 signal indicates a real, still-investigated confound.
+
+---
+
+## Appendix A: Decisions Index
+
+Quick lookup — full reasoning for each lives in the chapter noted.
+
+| #   | Decision                                                                 | Chapter |
+| --- | ------------------------------------------------------------------------ | ------- |
+| D1  | Outer join, not inner, for samples<->lab_results                         | Ch. 1   |
+| D2  | Ti as tracer; only its _stability_ matters, not magnitude                | Ch. 0   |
+| D3  | missing_barcode and orphan_lab_result are different categories           | Ch. 2   |
+| D4  | Pre-filter unusable samples BEFORE pairing (1 vs 2 valid pairs)          | Ch. 3   |
+| D5  | t-distribution CI, not normal/z                                          | Ch. 5   |
+| D6  | Control CDR (17.89) is non-trivially non-zero; net CI crosses zero       | Ch. 6-7 |
+| D7  | 2600 t/ha soil mass is an assumption; confirmed depth-toggle ratio=0.667 | Ch. 14  |
+| D8  | Welch's t-test, not Student's (variances differ 8x)                      | Ch. 8   |
+| D9  | MDE needs POOLED std across both groups, not one alone (bug found+fixed) | Ch. 8   |
+| D10 | Si stoichiometry as independent plausibility check (ratio ~2.45)         | Ch. 11  |
+| D11 | Multiverse: threshold/tracer robust, ordering is the real lever          | Ch. 12  |
+| D12 | Bootstrap/depth/charge-balance built for process, not headline results   | Ch. 14  |
+| D13 | GP/kriging + Isolation Forest built for explicit ML role-fit             | Ch. 15  |
+| D14 | Digital-twin coverage validation is the correctness proof                | Ch. 18  |
+| D15 | Repo restructured into core/extensions/ml/infra                          | Ch. 20  |
+
+## Appendix B: Extensions Status
+
+**Built and verified**
+
+| Area                                                             | Module(s)                        | Chapter |
+| ---------------------------------------------------------------- | -------------------------------- | ------- |
+| Counterfactual subtraction                                       | extensions/counterfactual.py     | Ch. 7   |
+| Significance testing + MDE                                       | extensions/significance.py       | Ch. 8   |
+| Monte Carlo / gradient sensitivity, materiality                  | extensions/sensitivity.py        | Ch. 9   |
+| Lab-batch forensics                                              | extensions/forensics.py          | Ch. 10  |
+| Si stoichiometric closure                                        | extensions/stoichiometry.py      | Ch. 11  |
+| Specification-curve / multiverse                                 | extensions/multiverse.py         | Ch. 12  |
+| Feedstock rate + Rajmahal Ti/Zr                                  | extensions/plausibility.py       | Ch. 13  |
+| Steinour check, coordinate/GPS/barcode checks                    | extensions/literature_checks.py  | Ch. 13  |
+| Bootstrap, depth toggle, charge-balance                          | extensions/robustness_checks.py  | Ch. 14  |
+| Robust median/MAD QC                                             | extensions/robust_qc.py          | Ch. 15  |
+| Hungarian pairing                                                | extensions/pairing_hungarian.py  | Ch. 3   |
+| Combined geo+geochemical distance                                | extensions/combined_distance.py  | Ch. 3   |
+| Metadata-geochemistry consistency, ratio/magnitude decomposition | extensions/consistency_checks.py | Ch. 16  |
+| GP/kriging baseline interpolation                                | ml/geospatial_ml.py              | Ch. 15  |
+| Isolation Forest                                                 | ml/anomaly_detection.py          | Ch. 15  |
+| Digital-twin coverage validation                                 | ml/digital_twin.py               | Ch. 18  |
+| Provenance ledger                                                | infra/provenance.py              | Ch. 19  |
+| Schema contracts                                                 | infra/schemas.py                 | Ch. 19  |
+| Map visualization                                                | infra/mapping.py                 | Ch. 19  |
+| Full test suite (15 tests, incl. property-based)                 | tests/                           | Ch. 17  |
+
+**Described-only** (cannot run on this synthetic dataset)
+
+| Extension                             | Why it can't run here                             | Reference                       |
+| ------------------------------------- | ------------------------------------------------- | ------------------------------- |
+| Bayesian hierarchical model (PyMC)    | Needs N>2 pairs to fit between-pair variance      | PART3_THINKING.md Q5            |
+| Sentinel-2 NDVI corroboration         | No real imagery exists for fabricated coordinates | —                               |
+| Cation exchange / sorption correction | Needs measured CEC, not in this schema            | —                               |
+| Secondary carbonate formation         | Needs isotopic/carbonate-content data             | Ch. 11 (connects to Si finding) |
+| Riverine/marine loss fraction         | Needs catchment-scale hydrological modeling       | —                               |
 
 That is the whole story, tiniest detail to final conclusion.
