@@ -644,4 +644,27 @@ Quick lookup — full reasoning for each lives in the chapter noted.
 | Secondary carbonate formation         | Needs isotopic/carbonate-content data             | Ch. 11 (connects to Si finding) |
 | Riverine/marine loss fraction         | Needs catchment-scale hydrological modeling       | —                               |
 
+## Chapter 15.5: On Deep Learning, Specifically
+
+Deliberately not used here, and worth stating why rather than leaving it
+as an obvious gap. With N=12 total samples, any neural network — even a
+tiny one — would have no way to generalize; it would either fail to
+train meaningfully or memorize the 12 points outright. Reaching for deep
+learning at this scale would signal not understanding when a technique
+fits the data, which matters more than reaching for the most sophisticated
+tool available.
+
+**Where it genuinely would fit, at real project scale:** the described
+Sentinel-2 NDVI corroboration extension (see Appendix B) is the natural
+home for it. At a real deployment — thousands of samples, multi-year
+satellite time series, multiple projects — a CNN or vision transformer
+processing raw Sentinel-2 imagery (rather than a pre-computed NDVI index)
+could detect vegetation-health patterns correlated with weathering
+activity that a hand-engineered index might miss: subtle spectral
+signatures in specific bands, spatial patterns in canopy structure, or
+temporal dynamics across a full growing season. This is a concrete,
+specific extension of the ML work here, not a vague gesture at "using
+deep learning somewhere" — it requires real satellite data this synthetic
+project doesn't have, which is exactly why it's catalogued as
+described-only rather than attempted with 12 rows.
 That is the whole story, tiniest detail to final conclusion.

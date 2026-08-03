@@ -191,3 +191,84 @@ Session 21), not left as description-only. Coverage validation across 300
 trials at n_pairs=2 (matching the real project) gave 95.0% coverage
 against the 95% nominal target - strong evidence the pipeline's CI
 implementation is correctly calibrated.
+
+## 6. Additional questions, in the spirit of Part 3
+
+The five guide questions above share a pattern: each finds a place where
+the simple/required version of something breaks down under real
+conditions, and asks whether the candidate saw it coming. In that same
+spirit, here are further questions this project surfaced, answered from
+what's actually in the repo.
+
+**Q6. You built both Isolation Forest and simple median/MAD for tracer
+QC. When should a team reach for ML over a simpler statistical method,
+and when shouldn't it?**
+Concretely tested, not hypothetical (see robust_qc.py, anomaly_detection.py,
+Chapter 15): at n=7 with one obvious outlier, Isolation Forest with
+`contamination='auto'` is seed-unstable (43/50 seeds correct, 7/50 wrong),
+and forcing stability requires telling it the answer in advance
+(`contamination=1/7`), which defeats the point of unsupervised detection.
+Median/MAD separates the same outlier with a robust z-score of 96 — no
+instability, fully explainable to a non-technical auditor. The general
+rule this suggests: reach for ML when the pattern is genuinely too
+complex for a human-readable statistic to capture, or when the dataset
+is large enough that visual/manual inspection isn't feasible (the
+5,000-sample, 8-project scale this assignment gestures at). Below that
+scale, with visually obvious anomalies, a simpler method that an auditor
+can verify by hand is more defensible — not because ML is wrong, but
+because auditability has its own value that a marginal accuracy gain
+doesn't automatically outweigh.
+
+**Q7. Given a positive point estimate (39.49 t/ha) with a non-significant
+result (p=0.0857) and a CI crossing zero, what should the business
+actually do — credit it anyway at a discount, wait for more data, or
+abandon the claim?**
+This is a genuine judgment call, not a statistics question. My answer:
+none of the three in isolation. Crediting at a discount without
+resolving _why_ the CI is this wide treats a data problem as a pricing
+problem — the discount would be a guess, not a calculation. Abandoning
+outright wastes real information (there IS a positive signal, just not
+yet a provable one). The right move is the one Part 3 Q3 already
+identifies: fix the sampling protocol (season-matched collection) and
+collect enough additional pairs to reach the ~395/group threshold this
+project's own MDE analysis calculated — then let the recomputed number
+speak for itself. A business under revenue pressure to credit early
+should be shown this project's own digital-twin coverage validation
+(Ch. 18) as evidence that the STATISTICS are trustworthy; the honest
+constraint is sample size, not methodology.
+
+**Q8. A junior engineer on your team submits a PR that replaces the
+t-distribution CI with a bootstrap CI because "it's simpler." What do
+you tell them?**
+Concretely demonstrated in this project (robustness_checks.py, Ch. 14):
+bootstrap CI came out narrower ([55.99, 58.78] vs. [39.63, 75.15]) — and
+a junior engineer might read that as an improvement. It isn't. At N=2,
+bootstrap can only ever resample the 2 values already observed (3
+possible distinct means), so it structurally cannot express the
+possibility that the true population mean lies outside the sample. The
+review comment: "your CI got narrower, but ask yourself whether that's
+because you learned something new about the population, or because your
+method can't see past the 2 points you happened to draw. Show me the
+math for why bootstrap is trustworthy at this N before we ship it."
+
+**Q9. If you had to explain this project's core finding to someone who
+doesn't know what a confidence interval is — a farmer, a registry
+auditor without a stats background, a business development lead — how
+would you say it?**
+"We measured a positive number, but we only measured it twice. If we
+measured it a third and fourth time, there's a real chance we'd get a
+very different answer, including zero. We need to measure more before we
+can promise this number is real." That's the entire Chapter 6-8 argument
+compressed to two sentences — and if it can't survive that compression,
+the underlying finding probably isn't well understood yet either.
+
+**Q10. What's the single cheapest, highest-value change to the FIELD
+protocol (not the code) this project surfaces?**
+Season-matched baseline/monitoring collection (Ch. 10, Ch. 6-7). Right
+now baselines are collected post-monsoon (Oct) and monitoring pre-monsoon
+(May) — a full flood/dry cycle apart, in rice paddies where redox
+chemistry alone can move Ca/Mg independent of any weathering. This one
+protocol change (collect both at matched points in the seasonal cycle)
+costs nothing in engineering time and directly attacks the single
+biggest confound in the whole dataset — cheaper and higher-leverage than
+any code change on this list.
