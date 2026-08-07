@@ -93,11 +93,16 @@ function Nav() {
         <div className="container">
           <span className="nav-brand">Project <span>Ganga</span></span>
           <ul className="nav-links">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#how">How it works</a></li>
             <li><a href="#part1">Part 1</a></li>
             <li><a href="#part2">Part 2</a></li>
             <li><a href="#finding">Finding</a></li>
-            <li><a href="#extensions">Extensions</a></li>
-            <li><a href="#twin">Digital Twin</a></li>
+            <li><a href="#confound">Confound</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#extensions">Modules</a></li>
+            <li><a href="#part3">Part 3</a></li>
+            <li><a href="#decisions">Decisions</a></li>
             <li><a href={REPO} target="_blank" rel="noopener noreferrer" className="nav-cta">GitHub ↗</a></li>
           </ul>
         </div>
@@ -121,7 +126,7 @@ function Hero() {
           Four independent statistical methods converge on one honest answer.
         </p>
         <div className="hero-actions">
-          <a href="#part1" className="btn-primary">Read the findings ↓</a>
+          <a href="#how" className="btn-primary">Start with how it works ↓</a>
           <a href={REPO} target="_blank" rel="noopener noreferrer" className="btn-outline">
             View source on GitHub ↗
           </a>
@@ -156,6 +161,347 @@ function AskStrip() {
   )
 }
 
+/* ─────────────────────────── DASHBOARD ─────────────────────────── */
+function Dashboard() {
+  const kpis = [
+    { label: 'Treatment CDR', value: '57.39', unit: 't CO₂/ha', note: '2 of 3 attempted pairs valid', accent: 'var(--color-primary)' },
+    { label: 'Control CDR', value: '17.89', unit: 't CO₂/ha', note: 'On land that received no rock — expected ~0', accent: '#dc2626' },
+    { label: 'Net after counterfactual', value: '39.49', unit: 't CO₂/ha', note: '31.2% downward correction', accent: 'var(--color-teal-accent)' },
+    { label: 'Welch p-value', value: '0.0857', unit: '', note: 'Not significant at α = 0.05', accent: '#d97706' },
+    { label: 'Minimum detectable effect', value: '44.95', unit: 't CO₂/ha', note: 'Larger than the effect observed', accent: '#d97706' },
+    { label: 'Combined uncertainty', value: '19.2', unit: '%', note: 'Against a 5% materiality threshold', accent: '#dc2626' },
+    { label: 'CI coverage, digital twin', value: '95.0', unit: '%', note: 'At n=2 — the pipeline itself is calibrated', accent: 'var(--color-teal-accent)' },
+    { label: 'Tests passing', value: '15', unit: '/ 15', note: 'Example-based plus property-based', accent: 'var(--color-teal-accent)' },
+  ]
+
+  const parts = [
+    {
+      weight: '20%',
+      title: 'Part 1 — Data quality',
+      body: 'All six required checks implemented in quality.py as independent functions. 8 issues across 5 root-cause records, zero false flags — including two negative assertions that lock the boundary cases permanently.',
+      status: 'Complete',
+    },
+    {
+      weight: '50%',
+      title: 'Part 2 — CDR pipeline',
+      body: 'All five steps, one module each: pairing, validation, chemistry, statistics, control comparison. All five traps planted in the data are caught, each with a reason string rather than a silent drop.',
+      status: 'Complete',
+    },
+    {
+      weight: '30%',
+      title: 'Part 3 — Thinking',
+      body: 'Every one of the five questions answered with code that was actually run: two alternative pairing algorithms, a 12-specification robustness curve, and a digital twin built rather than sketched.',
+      status: 'Complete',
+    },
+  ]
+
+  return (
+    <section className="section section--dark" id="dashboard">
+      <div className="container">
+        <p className="section-label">Project dashboard</p>
+        <h2 style={{ color: '#fff' }}>Every headline number, in one place.</h2>
+        <p style={{ marginTop: 16, color: 'rgba(242,247,238,0.7)' }}>
+          Each figure below is produced by running code in this repository — no number here
+          was transcribed from notes. Appendix E of the book maps every one to the command
+          that reproduces it.
+        </p>
+
+        <div className="kpi-grid">
+          {kpis.map((k) => (
+            <div className="kpi" key={k.label} style={{ borderTopColor: k.accent }}>
+              <div className="kpi-label">{k.label}</div>
+              <div className="kpi-value">
+                {k.value}
+                {k.unit && <span className="kpi-unit">{k.unit}</span>}
+              </div>
+              <p className="kpi-note">{k.note}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="ext-group" style={{ marginTop: 56 }}>
+          <div className="ext-group-title">The brief, and what was delivered against it</div>
+          <div className="scorecard">
+            {parts.map((p) => (
+              <div className="scorecard-row" key={p.title}>
+                <div className="scorecard-weight">
+                  {p.weight}
+                  <span>of grade</span>
+                </div>
+                <div>
+                  <div className="scorecard-title">{p.title}</div>
+                  <p>{p.body}</p>
+                </div>
+                <div className="scorecard-status">{p.status}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="ext-group" style={{ marginTop: 48 }}>
+          <div className="ext-group-title">How the repository is organized</div>
+          <table className="issue-table issue-table--dark" style={{ marginTop: 16 }}>
+            <thead>
+              <tr>
+                <th style={{ width: 190 }}>Package</th>
+                <th style={{ width: 80 }}>Modules</th>
+                <th>What lives there</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>src/erw/core/</code></td>
+                <td>8</td>
+                <td>Everything Parts 1 and 2 of the brief require. Runs standalone — nothing downstream is imported by it.</td>
+              </tr>
+              <tr>
+                <td><code>src/erw/extensions/</code></td>
+                <td>13</td>
+                <td>The investigation. Each module answers one specific doubt about whether the required pipeline&rsquo;s number can be believed.</td>
+              </tr>
+              <tr>
+                <td><code>src/erw/ml/</code></td>
+                <td>3</td>
+                <td>Gaussian-process kriging, Isolation Forest, and the digital-twin correctness proof.</td>
+              </tr>
+              <tr>
+                <td><code>src/erw/infra/</code></td>
+                <td>3</td>
+                <td>Provenance ledger, Pydantic schema contracts, and the sample map — the parts an auditor would need.</td>
+              </tr>
+              <tr>
+                <td><code>tests/</code></td>
+                <td>15 tests</td>
+                <td>Example-based regression tests plus property-based tests via <code>hypothesis</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─────────────────────────── HOW IT WORKS ─────────────────────────── */
+function HowItWorks() {
+  const steps = [
+    {
+      n: '01',
+      name: 'Load & join',
+      file: 'io.py',
+      desc: 'Outer join on barcode with indicator=True, so unmatched rows on either side stay visible instead of being silently dropped.',
+    },
+    {
+      n: '02',
+      name: 'Quality checks',
+      file: 'quality.py',
+      desc: 'Six independent rules: missing fields, orphan records both directions, baseline timing, spatial outliers, tracer stability, lab status.',
+    },
+    {
+      n: '03',
+      name: 'Pair',
+      file: 'pairing.py',
+      desc: 'Every candidate pair sorted globally by Haversine distance, then claimed greedily — so the genuinely closest pair always locks in first.',
+    },
+    {
+      n: '04',
+      name: 'Validate',
+      file: 'validation.py',
+      desc: 'A second, independent filter: pair-specific Ti stability, baseline collected before application, neither sample lab-flagged.',
+    },
+    {
+      n: '05',
+      name: 'Compute CDR',
+      file: 'chemistry.py',
+      desc: 'Ti-normalised Ca and Mg enrichment → moles → CO₂ equivalents → tonnes per hectare. Pure functions, zero I/O.',
+    },
+    {
+      n: '06',
+      name: 'Summarise',
+      file: 'stats.py',
+      desc: 'Mean, sample std (ddof=1), and a 95% CI from the t-distribution — 12.71× at df=1, not 1.96.',
+    },
+  ]
+
+  const glossary = [
+    { term: 'CDR', def: 'Carbon Dioxide Removal — tonnes of CO₂ removed. Here it is inferred from soil chemistry, not measured as gas.' },
+    { term: 'ha', def: 'Hectare: 10,000 m², a 100 m × 100 m square. Rock is spread per unit area, so credit is counted per unit area.' },
+    { term: 'ppm', def: 'Parts per million — mg of element per kg of soil. 16,780 ppm Ca means calcium is 1.678% of the soil mass.' },
+    { term: 'Tracer', def: 'An immobile element (Ti, and Zr as a cross-check). It does not dissolve or react, so any change in it measures sampling artifacts, not chemistry.' },
+    { term: 'Counterfactual', def: 'What would have happened anyway. In the Isometric protocol the control plot\u2019s CDR is this term, subtracted directly from the treatment result.' },
+    { term: 'MDE', def: 'Minimum Detectable Effect — the smallest true effect a study could reliably find, given its noise and sample size.' },
+    { term: 'Materiality', def: 'A protocol\u2019s tolerance for uncertainty. Isometric uses 5%; this project comes to 19.2%.' },
+  ]
+
+  return (
+    <section className="section" id="how">
+      <div className="container">
+        <div className="section-num">1</div>
+        <p className="section-label">How it works</p>
+        <h2>Titanium is a ruler. Everything else follows.</h2>
+        <p style={{ marginTop: 16, color: 'var(--color-text-muted)' }}>
+          Two scoops of soil taken seven months apart are never identical in mass or
+          density — and that difference alone shows up as a fake enrichment signal.
+          The whole method exists to remove it.
+        </p>
+
+        <div className="card-grid card-grid--2">
+          <div className="card" style={{ borderLeft: '4px solid #dc2626' }}>
+            <div className="card-icon">🥄</div>
+            <h3>The problem: you cannot just subtract</h3>
+            <p>
+              If the monitoring scoop happens to be 5% denser in mineral matter, then
+              <em> every</em> element reads ~5% higher — Ca, Mg, Ti, Si alike — with no
+              chemistry involved. At Ca ≈ 16,500 ppm that is 825 ppm of pure fiction,
+              a large fraction of a real weathering signal.
+            </p>
+          </div>
+          <div className="card" style={{ borderLeft: '4px solid var(--color-primary)' }}>
+            <div className="card-icon">📏</div>
+            <h3>The fix: divide by something that cannot move</h3>
+            <p>
+              Titanium does not dissolve and does not react with CO₂. So any change in
+              measured Ti is <em>by construction</em> a sampling artifact. Compare Ca
+              <em> relative to Ti</em> instead, and a 5% denser scoop cancels exactly —
+              both numbers rise together, the ratio does not move.
+            </p>
+          </div>
+        </div>
+
+        <div
+          className="card"
+          style={{ marginTop: 20, background: '#f0fdf4', borderColor: '#bbf7d0', borderLeft: '4px solid #16a34a' }}
+        >
+          <h3 style={{ color: '#15803d' }}>The proof that the correction is honest</h3>
+          <p style={{ color: '#166534' }}>
+            A correction is only trustworthy if it does <strong>nothing</strong> when there is
+            nothing to correct. Set Ti_baseline = Ti_monitoring = T:
+          </p>
+          <pre
+            style={{
+              marginTop: 12,
+              padding: '14px 16px',
+              background: '#052e16',
+              color: '#bbf7d0',
+              borderRadius: 8,
+              fontSize: '0.82rem',
+              overflowX: 'auto',
+            }}
+          >
+{`Δppm = ( Ca_mon / T  −  Ca_bl / T ) × T
+     = Ca_mon − Ca_bl`}
+          </pre>
+          <p style={{ color: '#166534', marginTop: 12 }}>
+            The T cancels completely and the formula collapses to plain subtraction. Three
+            things follow: Ti&rsquo;s absolute value is irrelevant (only its stability between
+            the two samples matters), the normalisation cannot manufacture signal, and the
+            pair-specific Ti gate in validation follows directly. Proven algebraically, pinned
+            by a fixed-example regression test, and generalised across hundreds of randomised
+            inputs with the <code>hypothesis</code> library.
+          </p>
+        </div>
+
+        <div className="ext-group" style={{ marginTop: 48 }}>
+          <div className="ext-group-title" style={{ color: 'var(--color-primary)' }}>
+            The pipeline, end to end
+          </div>
+
+          <div className="flowdiagram">
+            <div className="flowtrack-label">Inputs, and the join that keeps everything</div>
+            <div className="flowtrack">
+              <div className="flowchip flowchip--input">samples.csv<span>12 GPS-tagged field samples</span></div>
+              <div className="flowchip flowchip--input">lab_results.csv<span>12 ICP-OES rows</span></div>
+              <div className="flowarrow">→</div>
+              <div className="flowchip">io.py<span>outer join on barcode, indicator=True</span></div>
+            </div>
+
+            <div className="flowsplit">The joined table feeds two independent tracks</div>
+
+            <div className="flowtrack-label">Track A · Part 1 — data quality</div>
+            <div className="flowtrack">
+              <div className="flowchip">quality.py<span>6 independent checks</span></div>
+              <div className="flowarrow">→</div>
+              <div className="flowchip flowchip--out">8 issues<span>5 root-cause records · 0 false flags</span></div>
+            </div>
+
+            <div className="flowtrack-label">Track B · Part 2 — the CDR pipeline</div>
+            <div className="flowtrack">
+              <div className="flowchip">pairing.py<span>greedy 1:1, within 500 m</span></div>
+              <div className="flowarrow">→</div>
+              <div className="flowchip">validation.py<span>4 gates, all failures reported</span></div>
+              <div className="flowarrow">→</div>
+              <div className="flowchip">chemistry.py<span>Ti-normalised CDR</span></div>
+              <div className="flowarrow">→</div>
+              <div className="flowchip">stats.py<span>mean, std, t-distribution CI</span></div>
+              <div className="flowarrow">→</div>
+              <div className="flowchip flowchip--out">57.39<span>treatment, t CO₂/ha</span></div>
+              <div className="flowchip flowchip--warn">17.89<span>control — expected ~0</span></div>
+            </div>
+
+            <div className="flowtrack-label">Supporting modules, used by both tracks</div>
+            <div className="flowtrack">
+              <div className="flowchip flowchip--input">geo.py<span>Haversine distance, GPS validity</span></div>
+              <div className="flowchip flowchip--input">config.py<span>every threshold, tagged by authority</span></div>
+            </div>
+          </div>
+
+          <div className="card-grid card-grid--3" style={{ marginTop: 20 }}>
+            {steps.map((s) => (
+              <div className="card" key={s.n}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.72rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.1em',
+                    color: 'var(--color-primary)',
+                    marginBottom: 8,
+                  }}
+                >
+                  {s.n} · <code style={{ fontSize: '0.72rem' }}>{s.file}</code>
+                </div>
+                <h3>{s.name}</h3>
+                <p>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="ext-group" style={{ marginTop: 48 }}>
+          <div className="ext-group-title" style={{ color: 'var(--color-primary)' }}>
+            Vocabulary, if any of this is new
+          </div>
+          <table className="issue-table" style={{ marginTop: 16 }}>
+            <thead>
+              <tr>
+                <th style={{ width: 170 }}>Term</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              {glossary.map((g) => (
+                <tr key={g.term}>
+                  <td><strong>{g.term}</strong></td>
+                  <td style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>{g.def}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p style={{ marginTop: 16, fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+            The full version — every chapter explaining the concept, the code, and the
+            numbers it produces — is{' '}
+            <a href={`${REPO}/blob/main/BOOK.md`} target="_blank" rel="noopener noreferrer">
+              the Ganga MRV Book
+            </a>
+            . Chapter 8 starts from what a p-value is; Appendix C explains every Python idiom
+            used in the repo.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ─────────────────────────── PART 1 ─────────────────────────── */
 function Part1() {
   const issues = [
@@ -169,7 +515,7 @@ function Part1() {
   return (
     <section className="section section--white" id="part1">
       <div className="container">
-        <div className="section-num">1</div>
+        <div className="section-num">2</div>
         <p className="section-label">Part 1 · Data Quality</p>
         <h2>8 issues. 5 root causes. Zero false flags.</h2>
         <p style={{ marginTop: 16, color: 'var(--color-text-muted)' }}>
@@ -236,7 +582,7 @@ function Part2() {
   return (
     <section className="section" id="part2">
       <div className="container">
-        <div className="section-num">2</div>
+        <div className="section-num">3</div>
         <p className="section-label">Part 2 · CDR Pipeline</p>
         <h2>The two headline numbers — and why both matter.</h2>
         <p style={{ marginTop: 16, color: 'var(--color-text-muted)' }}>
@@ -318,7 +664,7 @@ function Finding() {
   return (
     <section className="section section--dark" id="finding">
       <div className="container">
-        <div className="section-num">3</div>
+        <div className="section-num">4</div>
         <p className="section-label">The Convergent Finding</p>
         <h2 style={{ color: '#fff' }}>
           Four independent methods.<br />One honest conclusion.
@@ -403,6 +749,288 @@ function Finding() {
   )
 }
 
+/* ─────────────────────────── THE CONFOUND ─────────────────────────── */
+function Confound() {
+  const batch = [
+    { el: 'Ti', mean: '3,075.7', bl006: '3,095.0', dev: '+0.63%' },
+    { el: 'Ca', mean: '16,650.0', bl006: '16,700.0', dev: '+0.30%' },
+    { el: 'Mg', mean: '5,806.7', bl006: '5,850.0', dev: '+0.75%' },
+    { el: 'Si', mean: '8,356.7', bl006: '8,400.0', dev: '+0.52%' },
+  ]
+
+  const processes = [
+    { p: 'Carbonate dissolving and re-precipitating across the flood cycle', ca: 'Moves Ca strongly, Mg moderately', ti: 'Ti sits in silicates — barely moves' },
+    { p: 'Cation exchange as Fe²⁺ and Mn²⁺ displace adsorbed ions', ca: 'Ca/Mg move on and off clay surfaces', ti: 'Ti is not in the exchange pool at all' },
+    { p: 'Reductive dissolution of iron oxides', ca: 'Releases co-sorbed ions; shifts pH', ti: 'Ti stays in the resistate fraction' },
+    { p: 'Agricultural lime applied to the field', ca: 'Adds Ca with no accompanying Si', ti: 'Unchanged' },
+    { p: 'A bigger or denser scoop of the same soil', ca: 'Ca/Mg rise proportionally', ti: 'Ti rises proportionally — this is the case the correction is built for' },
+  ]
+
+  return (
+    <section className="section section--darker" id="confound">
+      <div className="container">
+        <div className="section-num">5</div>
+        <p className="section-label">Hunting the confound</p>
+        <h2 style={{ color: '#fff' }}>Why does untreated land show 17.89 t CO₂/ha?</h2>
+        <p style={{ marginTop: 16, color: 'rgba(242,247,238,0.7)' }}>
+          The brief calls the control plot a sanity check. It failed, and the rest of this
+          project is the investigation into why. Two hypotheses were testable with the data
+          available.
+        </p>
+
+        <div className="ext-group" style={{ marginTop: 44 }}>
+          <div className="ext-group-title">Hypothesis 1 — lab-batch drift · <code>forensics.py</code></div>
+          <p style={{ color: 'rgba(242,247,238,0.7)', fontSize: '0.9rem' }}>
+            Every baseline carries an <code>LB-24-*</code> barcode and every monitoring sample an{' '}
+            <code>LB-25-*</code> one, so treatment epoch is perfectly confounded with which
+            year the lab ran the analysis. Instrument drift between the two runs would
+            manufacture a false enrichment signal in <em>both</em> treatment and control.
+            Ordinarily untestable — except one sample breaks the pattern.{' '}
+            <code>GNG-BL-006</code> is chemically a baseline but was physically analysed in the
+            2025 batch: an accidental cross-batch natural experiment.
+          </p>
+          <table className="issue-table issue-table--dark" style={{ marginTop: 20 }}>
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>2024-batch baseline mean (ppm)</th>
+                <th>GNG-BL-006, 2025 batch (ppm)</th>
+                <th>Deviation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {batch.map((r) => (
+                <tr key={r.el}>
+                  <td><strong>{r.el}</strong></td>
+                  <td>{r.mean}</td>
+                  <td>{r.bl006}</td>
+                  <td><span className="badge badge--green">{r.dev}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p style={{ marginTop: 16, color: 'rgba(242,247,238,0.6)', fontSize: '0.85rem' }}>
+            All four elements agree within 1%. That <em>weakens</em> the drift hypothesis
+            without ruling it out — it is a single sample, and one observation cannot
+            characterise a batch.
+          </p>
+        </div>
+
+        <div className="ext-group" style={{ marginTop: 52 }}>
+          <div className="ext-group-title">Hypothesis 2 — the seasonal and hydrological cycle</div>
+          <p style={{ color: 'rgba(242,247,238,0.7)', fontSize: '0.9rem' }}>
+            This is the leading remaining candidate, and it is entirely a consequence of the
+            sampling calendar. Baselines and monitoring samples were collected at{' '}
+            <strong>opposite points of the annual flood/dry cycle</strong> in a rice-paddy
+            landscape.
+          </p>
+
+          <div className="timeline">
+            <div className="timeline-step">
+              <div className="timeline-date">October 2024</div>
+              <h4>Baselines collected</h4>
+              <p>Post-monsoon. Fields recently flooded, soils saturated and reducing. Fe(III) oxides dissolving, Fe²⁺ and Mn²⁺ in solution displacing adsorbed Ca and Mg.</p>
+            </div>
+            <div className="timeline-step">
+              <div className="timeline-date">15 October 2024</div>
+              <h4>Rock applied</h4>
+              <p>Crushed silicate spread on treatment plots only. The control plots receive nothing — which is what makes their 17.89 t CO₂/ha so informative.</p>
+            </div>
+            <div className="timeline-step">
+              <div className="timeline-date">May 2025</div>
+              <h4>Monitoring collected</h4>
+              <p>Pre-monsoon, peak dry season. Soils oxidised, Fe²⁺ re-precipitated as oxides, pH fallen back, cations redistributed. A completely different chemical state.</p>
+            </div>
+          </div>
+
+          <p style={{ marginTop: 28, color: 'rgba(242,247,238,0.7)', fontSize: '0.9rem' }}>
+            The flooded-paddy redox sequence is textbook soil science — Ponnamperuma (1972) and
+            Kirk (2004) are the standard references. The operationally measurable pool of Ca and
+            Mg genuinely differs between a saturated post-monsoon soil and a dry pre-monsoon
+            one, with zero basalt weathering required.
+          </p>
+        </div>
+
+        <div className="ext-group" style={{ marginTop: 52 }}>
+          <div className="ext-group-title">Why titanium normalisation cannot cancel this</div>
+          <p style={{ color: 'rgba(242,247,238,0.7)', fontSize: '0.9rem' }}>
+            Ti normalisation corrects for exactly one thing: the sample being a bigger, smaller
+            or denser scoop of the same material. Formally it cancels a multiplicative factor
+            applied to <em>all</em> elements at once. Seasonal redox is not that — it is a{' '}
+            <strong>selective</strong> process that moves Ca and Mg while leaving Ti untouched,
+            precisely because Ti is neither redox-active nor exchangeable. Which is why Ti was
+            chosen as a tracer in the first place.
+          </p>
+          <table className="issue-table issue-table--dark" style={{ marginTop: 20 }}>
+            <thead>
+              <tr>
+                <th style={{ width: '34%' }}>Process</th>
+                <th>Effect on Ca / Mg</th>
+                <th>Effect on Ti</th>
+              </tr>
+            </thead>
+            <tbody>
+              {processes.map((r, i) => (
+                <tr key={r.p}>
+                  <td>{i === processes.length - 1 ? <strong>{r.p}</strong> : r.p}</td>
+                  <td>{r.ca}</td>
+                  <td>{r.ti}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div
+            style={{
+              marginTop: 24,
+              padding: '22px 26px',
+              background: 'rgba(227,227,61,0.08)',
+              border: '1px solid rgba(227,227,61,0.25)',
+              borderRadius: 'var(--radius-card)',
+            }}
+          >
+            <p style={{ color: 'rgba(242,247,238,0.85)', maxWidth: 'none' }}>
+              Only the last row is the case the correction was designed for. In the first four you
+              get a genuine ΔCa with a perfectly stable Ti — which is exactly the signature the
+              formula reads as enrichment.{' '}
+              <strong style={{ color: '#e3e33d' }}>
+                Titanium corrects for how much soil you scooped. It cannot correct for what the
+                soil was doing.
+              </strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─────────────────────────── RESEARCH ─────────────────────────── */
+function Research() {
+  const literature = [
+    { src: 'Ponnamperuma (1972), The Chemistry of Submerged Soils', what: 'The canonical flooded-soil redox cascade: electron-acceptor sequence, pH convergence toward neutral, and the mobilisation of exchangeable cations that follows.' },
+    { src: 'Kirk (2004), The Biogeochemistry of Submerged Soils', what: 'Modern synthesis of the same system, including the drainage half of the cycle and the re-precipitation that resets the soil each season.' },
+    { src: 'Ca–Mg carbonate cycling in irrigated rice (Geoderma)', what: 'Irrigation-driven Eh and pH swings precipitate Ca–Mg carbonate under waterlogging and re-dissolve it on drying — a seasonal solid↔solution transfer with no external input.' },
+    { src: 'Flood-irrigation management studies (Agricultural Water Management)', what: 'On drainage, soil-solution Ca and Mg fall as ions resorb to exchange sites; the chemistry resets when flooding returns. Directly relevant to a May-vs-October comparison.' },
+    { src: 'Paddy redox cycling and Fe minerals (Env. Sci.: Processes & Impacts, 2023)', what: 'Repeated flood–drain cycles release Fe, Si, P and dissolved organic carbon from iron minerals — evidence that the mobile pool is genuinely not static across redox states.' },
+    { src: 'Reershemius et al. (2023), ERW mass balance', what: 'States the boundary explicitly: tracer normalisation is valid for mixing and dilution, not for biogeochemical seasonality. The formal version of what this project derived from the algebra.' },
+    { src: 'Frontiers in Climate (2024), ERW measurement review', what: 'Tracer methods place samples on a soil–rock mixing line; high N and good baseline characterisation are the binding constraints — the same two this project ran into.' },
+    { src: 'Isometric and Rainbow sampling protocols', what: 'Baseline before spreading, ongoing monitoring rather than one revisit, power analysis from pilot variance, and hydrology as an explicit stratification factor. Also the source of the 5% materiality threshold and the counterfactual master equation.' },
+    { src: 'Brimhall & Dietrich (1987), constitutive mass balance', what: 'The origin of immobile-element normalisation in geochemistry. The titanium ruler used here is a special case of it.' },
+  ]
+
+  const toolkit = [
+    { n: '01', t: 'Match the season', d: 'Collect baseline and monitoring in the same calendar window. This removes the confound rather than modelling it, and it costs nothing.', built: false },
+    { n: '02', t: 'Sample multiple timepoints', d: 'Three or four visits across the cycle let you estimate the seasonal component and subtract it, turning a confound into a measured covariate.', built: false },
+    { n: '03', t: 'Interleave the control plots', d: 'Counterfactual subtraction is only valid if treatment and control share a hydrological regime. At 1.5 km apart, these two blocks may not.', built: false },
+    { n: '04', t: 'Record Eh, pH, moisture, water table', d: 'The literature shows Ca and Mg track these directly, so they are the covariates that make the effect modellable at all.', built: false },
+    { n: '05', t: 'Measure porewater alongside solids', d: 'Bulk solid Ca/Mg cannot distinguish "the element left the field" from "the element moved between pools."', built: false },
+    { n: '06', t: 'Cross-check with a second tracer', d: 'Zr is already in the data. It does not fix seasonality — both tracers are equally blind to it — but it rules out tracer-specific artifacts.', built: true },
+    { n: '07', t: 'Test Si stoichiometry', d: 'The one check here that can distinguish silicate-sourced Ca from carbonate- or lime-sourced Ca. Both valid pairs come back outside the silicate band.', built: true },
+    { n: '08', t: 'Size the study from pilot variance', d: 'If seasonal swing is part of your noise, the sample-size calculation has to include it. This is why the MDE comes out at 44.95 t/ha.', built: true },
+  ]
+
+  return (
+    <section className="section section--white" id="research">
+      <div className="container">
+        <div className="section-num">6</div>
+        <p className="section-label">Research</p>
+        <h2>Reading outside the repository.</h2>
+        <p style={{ marginTop: 16, color: 'var(--color-text-muted)' }}>
+          Interpreting the control-plot result meant going to the literature — for paddy-soil
+          biogeochemistry, for ERW MRV methodology, and for the geochemical mass-balance theory
+          the titanium correction descends from. Consolidated in{' '}
+          <a href={`${REPO}/blob/main/BOOK.md#appendix-f-research-notes-literature-and-side-investigations`} target="_blank" rel="noopener noreferrer">
+            Appendix F of the book
+          </a>
+          .
+        </p>
+
+        <table className="issue-table" style={{ marginTop: 32 }}>
+          <thead>
+            <tr>
+              <th style={{ width: '36%' }}>Source</th>
+              <th>What it establishes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {literature.map((l) => (
+              <tr key={l.src}>
+                <td style={{ fontSize: '0.84rem' }}><strong>{l.src}</strong></td>
+                <td style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>{l.what}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="ext-group" style={{ marginTop: 52 }}>
+          <div className="ext-group-title" style={{ color: 'var(--color-primary)' }}>
+            What a practitioner would actually do about a wet↔dry confound
+          </div>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: 4 }}>
+            Ordered by how directly each attacks the problem. Note how few of them are code
+            changes — the three marked <em>built</em> are in this repository; the rest are
+            protocol changes for the next collection round.
+          </p>
+          <div className="card-grid card-grid--2" style={{ marginTop: 24 }}>
+            {toolkit.map((t) => (
+              <div
+                className="card"
+                key={t.n}
+                style={{ borderLeft: `4px solid ${t.built ? '#16a34a' : 'var(--color-slate)'}` }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    marginBottom: 8,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '0.7rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.1em',
+                      color: 'var(--color-primary)',
+                    }}
+                  >
+                    {t.n}
+                  </span>
+                  <span className={`badge badge--${t.built ? 'green' : 'blue'}`}>
+                    {t.built ? 'Built here' : 'Protocol change'}
+                  </span>
+                </div>
+                <h3>{t.t}</h3>
+                <p>{t.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="card"
+          style={{ marginTop: 40, background: '#fafaf6', borderLeft: '4px solid var(--color-slate)' }}
+        >
+          <h3>Data versus inference — stated explicitly</h3>
+          <p style={{ marginTop: 8 }}>
+            The seasonal hypothesis depends on three things that are <em>not</em> columns in the
+            CSVs, so each is traced back to its evidence in Appendix F rather than asserted.{' '}
+            <strong>The barcode years</strong> come from the <code>LB-YY-####</code> naming pattern,
+            an explicit convention in <code>literature_checks.py</code>, and perfect agreement with
+            the date column across all eleven barcoded samples.{' '}
+            <strong>West Bengal</strong> comes from the coordinates (23.45°N, 87.32°E, in the
+            Bardhaman belt of the Ganges plain), the project name, and the Rajmahal Traps geology
+            check. <strong>Rice paddies</strong> is a land-use inference from the coordinates and the
+            sampling calendar — and it matters, because the redox mechanism is much weaker in an
+            upland rainfed system than a flooded one.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ─────────────────────────── EXTENSIONS ─────────────────────────── */
 function Extensions() {
   const groups = [
@@ -441,7 +1069,7 @@ function Extensions() {
       items: [
         { icon: '🗺️', name: 'geospatial_ml.py — GP/Kriging', desc: 'GP baseline interpolation; demonstrates optimizer collapse at N=2 (expected)' },
         { icon: '🌲', name: 'anomaly_detection.py — Isolation Forest', desc: "Seed-unstable at contamination='auto'; median/MAD more defensible at N<50" },
-        { icon: '🤖', name: 'digital_twin.py', desc: '300-trial coverage validation; 95.0% CI calibration at N=2 (see §5)' },
+        { icon: '🤖', name: 'digital_twin.py', desc: '300-trial coverage validation; 95.0% CI calibration at N=2 (see §8)' },
       ],
     },
     {
@@ -465,8 +1093,8 @@ function Extensions() {
   return (
     <section className="section section--darker" id="extensions">
       <div className="container">
-        <div className="section-num">4</div>
-        <p className="section-label">Extensions</p>
+        <div className="section-num">7</div>
+        <p className="section-label">Module catalogue</p>
         <h2 style={{ color: '#fff' }}>27 modules. Every one justified.</h2>
         <p style={{ marginTop: 16, color: 'rgba(242,247,238,0.7)', marginBottom: 0 }}>
           Restructured into four subpackages by concern — <code>core/</code>, <code>extensions/</code>,{' '}
@@ -503,7 +1131,7 @@ function DigitalTwin() {
   return (
     <section className="section section--dark" id="twin">
       <div className="container">
-        <div className="section-num">5</div>
+        <div className="section-num">8</div>
         <p className="section-label">Digital Twin · Correctness Proof</p>
         <h2 style={{ color: '#fff' }}>The pipeline is correct. The data is the problem.</h2>
         <p style={{ marginTop: 16, color: 'rgba(242,247,238,0.7)' }}>
@@ -554,48 +1182,194 @@ function DigitalTwin() {
   )
 }
 
-/* ─────────────────────────── DECISIONS ─────────────────────────── */
-function KeyDecisions() {
-  const decisions = [
-    { id: 'D1', text: 'Outer join (not inner) for samples↔lab_results — catches orphans on both sides' },
-    { id: 'D4', text: 'Pre-filter unusable samples before pairing — recovered 1 additional valid pair (100% difference)' },
-    { id: 'D5', text: 't-distribution CI, not z — at df=1 the multiplier is ~12.7 vs 1.96' },
-    { id: 'D8', text: "Welch's t-test, not Student's — treatment/control std differ 8×" },
-    { id: 'D9', text: 'MDE uses pooled std (bug found by cross-checking results against each other)' },
-    { id: 'D10', text: 'Si stoichiometry as independent plausibility check — ratio ~2.45 flags non-silicate source' },
-    { id: 'D11', text: 'Multiverse: threshold/tracer robust (~3%); pairing ordering is the real lever' },
-    { id: 'D14', text: 'Digital-twin coverage validation is the correctness proof, not just "tests pass"' },
+/* ─────────────────────────── PART 3 ─────────────────────────── */
+function Part3() {
+  const questions = [
+    {
+      q: 'Q1',
+      title: 'What would break at 10× scale?',
+      answer:
+        'The greedy pairing loop builds a full O(n²) distance matrix — fine at 12 samples, 25 million entries at 5,000. The redesign is spatial indexing plus per-project partitioning, since pairs never cross project boundaries. The provenance ledger was designed for this case: one machine-readable record per decision, so an auditor at scale never has to re-run the pipeline to understand a rejection.',
+      backed: 'pairing.py · infra/provenance.py',
+    },
+    {
+      q: 'Q2',
+      title: 'Pairing failure modes, and a better strategy',
+      answer:
+        'Nearest-GPS pairing has three failure modes visible in this dataset alone: it can claim a baseline that is geographically closest but scientifically unusable, it is sensitive to processing order, and it ignores whether the two soils are actually comparable. Two alternatives were implemented rather than described — Hungarian optimal assignment, and a combined metric that adds Mahalanobis distance on (Ti, Zr) to geographic distance.',
+      backed: 'pairing_hungarian.py · combined_distance.py',
+    },
+    {
+      q: 'Q3',
+      title: 'The control plot problem',
+      answer:
+        'The brief asks what a control CDR of ~0.3 t CO₂/ha would mean. Here it is 17.89 — sixty times larger, and 31% of the treatment signal. That single number is what turned this from an implementation exercise into an investigation: counterfactual subtraction, significance testing, Monte Carlo sensitivity, lab-batch forensics, and Si stoichiometry all exist to answer it.',
+      backed: 'counterfactual.py · significance.py · forensics.py · stoichiometry.py',
+    },
+    {
+      q: 'Q4',
+      title: 'Validation trade-offs at 10%, 20%, 30%',
+      answer:
+        'Answered as data rather than opinion: 12 specifications across pairing order × Ti threshold × tracer choice. Mean CDR spans only 57.39–59.06 t/ha, about 3%. Threshold and tracer barely matter; pairing order is the dominant lever because it changes N, not just the mean. This also produced a self-correction — the threshold sensitivity is in Part 1&rsquo;s population-mean check, which is contaminated by the very outlier it is meant to catch, not in Part 2&rsquo;s pair-specific gate.',
+      backed: 'multiverse.py · quality.py vs validation.py',
+    },
+    {
+      q: 'Q5',
+      title: 'One more thing, given another week',
+      answer:
+        'A digital twin — and it was built rather than sketched. Generate synthetic deployments with a known true CDR, run the real pipeline against them, and check whether the reported 95% interval actually contains the truth. It does, 95.0% of the time at n=2, which is what licenses the claim that the disappointing result is a data problem and not a code problem.',
+      backed: 'ml/digital_twin.py',
+    },
   ]
 
   return (
-    <section className="section section--white">
+    <section className="section" id="part3">
       <div className="container">
-        <p className="section-label" style={{ color: 'var(--color-primary)' }}>Key Decisions</p>
-        <h2>Every judgment call is traceable.</h2>
-        <p style={{ marginTop: 12, color: 'var(--color-text-muted)' }}>
-          Full reasoning for each lives in{' '}
-          <a href={`${REPO}/blob/main/BOOK.md#appendix-a-decisions-index`} target="_blank" rel="noopener noreferrer">BOOK.md Appendix A</a>{' '}
-          (cross-referenced to the chapter where the decision was made and verified).
+        <div className="section-num">9</div>
+        <p className="section-label">Part 3 · Thinking</p>
+        <h2>Five questions, answered with code that ran.</h2>
+        <p style={{ marginTop: 16, color: 'var(--color-text-muted)' }}>
+          The brief says strong answers reference the actual implementation. So each of the five
+          guide questions is backed by a module that exists and produces output, not by an
+          argument. Full write-up in{' '}
+          <a href={`${REPO}/blob/main/PART3_THINKING.md`} target="_blank" rel="noopener noreferrer">
+            PART3_THINKING.md
+          </a>
+          .
         </p>
-        <div className="card-grid card-grid--2" style={{ marginTop: 32 }}>
-          {decisions.map((d) => (
-            <div className="card" key={d.id} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-              <span
+
+        <div className="card-grid card-grid--2" style={{ marginTop: 36 }}>
+          {questions.map((item) => (
+            <div className="card" key={item.q} style={{ borderLeft: '4px solid var(--color-primary)' }}>
+              <div
                 style={{
-                  background: 'var(--color-primary)',
-                  color: '#fff',
-                  borderRadius: 6,
-                  padding: '2px 9px',
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  flexShrink: 0,
-                  marginTop: 2,
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.1em',
+                  color: 'var(--color-primary)',
+                  marginBottom: 8,
                 }}
               >
-                {d.id}
-              </span>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', maxWidth: 'none' }}>{d.text}</p>
+                {item.q}
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.answer}</p>
+              <p style={{ marginTop: 12, fontSize: '0.78rem', color: 'var(--color-slate)' }}>
+                <code style={{ fontSize: '0.75rem' }}>{item.backed}</code>
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─────────────────────────── DECISION FLOW ─────────────────────────── */
+function KeyDecisions() {
+  const chain = [
+    {
+      id: 'D1',
+      observed: 'Two CSVs have to be joined on barcode, and some rows may not match.',
+      decided: 'Outer join with indicator=True, not an inner join — keep every row and record how it matched.',
+      result: 'Found LB-25-5508 (a lab result with no sample) and GNG-MON-004 (a sample with no barcode). An inner join would have silently deleted both.',
+    },
+    {
+      id: 'D4',
+      observed: 'The brief says pair first, then validate. Run that way, GNG-MON-004 claims GNG-BL-001 at 0 m — despite having no barcode and no possible CDR.',
+      decided: 'Pre-filter to samples that actually have lab data, then pair. Both orderings kept on record.',
+      result: '2 valid treatment pairs instead of 1 — a 100% difference in usable output from a single ordering choice.',
+    },
+    {
+      id: 'D5',
+      observed: 'With N=2 valid pairs, a normal-distribution interval would report a comfortably narrow CI.',
+      decided: 'Use the t-distribution. At df=1 the multiplier is 12.71, not 1.96.',
+      result: 'An honest, very wide interval. The width is the finding — it correctly refuses to pretend two points pin down a population mean.',
+    },
+    {
+      id: 'D7',
+      observed: 'Control plots that received no rock return 17.89 t CO₂/ha — 31% of the treatment signal.',
+      decided: 'Treat control CDR as the formal counterfactual term and subtract it, propagating variance as Var(net) = Var(treatment) + Var(control).',
+      result: 'Net 39.49 t CO₂/ha, and a 95% CI of [−104.06, 183.05] that crosses zero.',
+    },
+    {
+      id: 'D8',
+      observed: 'Treatment std is 1.98; control std is 15.85 — different by a factor of eight.',
+      decided: "Welch's t-test rather than Student's, because Student's assumes equal variances.",
+      result: 'p = 0.0857. Not significant at α = 0.05, and defensible in a way the equal-variance test would not have been.',
+    },
+    {
+      id: 'D9',
+      observed: 'The first MDE calculation used treatment std alone, and disagreed with the independently computed required sample size.',
+      decided: 'Trust neither until they reconcile; recompute MDE with pooled standard deviation across both groups.',
+      result: 'MDE 44.95 t/ha — larger than the 39.49 observed. A real bug, caught only because two results were cross-checked against each other.',
+    },
+    {
+      id: 'D10',
+      observed: 'Si is measured in the data but never used by the required formula.',
+      decided: 'Use it as an independent chemical check — silicate dissolution must release Si alongside Ca and Mg.',
+      result: '(Ca+Mg)/Si = 2.44 and 2.46 across both valid pairs, above the ~0.5–1.5 silicate band. Points to a non-silicate Ca source such as lime or soil carbonate.',
+    },
+    {
+      id: 'D11',
+      observed: 'The 20% Ti threshold is stated in the brief but nothing physical fixes that number.',
+      decided: 'Run all 12 combinations of pairing order × threshold (10/20/30%) × tracer (Ti/Zr) rather than defending one choice.',
+      result: 'Mean CDR spans only 57.39–59.06 — about 3%. Threshold and tracer barely matter; pairing order is the dominant lever because it changes N.',
+    },
+    {
+      id: 'D12',
+      observed: "MON-003's Ti is 55% above the treatment mean — but that mean is itself contaminated by MON-003.",
+      decided: 'Add a median/MAD robust check alongside the required mean-based one, rather than replacing it.',
+      result: 'Robust z of 96.45 for MON-003 against −2.25 for the nearest clean sample — a separation of more than 40×, with no threshold to argue about.',
+    },
+    {
+      id: 'D13',
+      observed: 'Every baseline is LB-24 and every monitoring sample LB-25, so treatment epoch is perfectly confounded with lab batch.',
+      decided: 'Look for a sample that breaks the pattern. GNG-BL-006 is chemically a baseline but was run in the 2025 batch.',
+      result: 'Ti, Ca, Mg and Si all within 1% of the 2024-batch baselines. Lab drift weakened — though it is a single sample, so not eliminated.',
+    },
+    {
+      id: 'D14',
+      observed: 'All 15 tests pass, but passing tests only prove the code behaves sensibly on the data it was given.',
+      decided: 'Build a digital twin: generate deployments with a known true CDR, run the real pipeline, check whether the reported interval contains the truth.',
+      result: '95.0% coverage at n=2 across 300 trials. This is what licenses the claim that the constraint is the data and not the code.',
+    },
+  ]
+
+  return (
+    <section className="section section--white" id="decisions">
+      <div className="container">
+        <p className="section-label" style={{ color: 'var(--color-primary)' }}>Decision flow</p>
+        <h2>What was observed, what was decided, what followed.</h2>
+        <p style={{ marginTop: 12, color: 'var(--color-text-muted)' }}>
+          Every judgment call in this project came from something the data did, and each one
+          changed a number downstream. Read left to right. Full reasoning and the chapter where
+          each was verified is in{' '}
+          <a href={`${REPO}/blob/main/BOOK.md#appendix-a-decisions-index`} target="_blank" rel="noopener noreferrer">
+            Appendix A of the book
+          </a>
+          .
+        </p>
+
+        <div className="dflow">
+          {chain.map((d) => (
+            <div className="dflow-row" key={d.id}>
+              <div className="dflow-id">{d.id}</div>
+              <div className="dflow-cell">
+                <div className="dflow-cell-label">Observed</div>
+                <p>{d.observed}</p>
+              </div>
+              <div className="dflow-arrow" aria-hidden="true">→</div>
+              <div className="dflow-cell">
+                <div className="dflow-cell-label">Decided</div>
+                <p>{d.decided}</p>
+              </div>
+              <div className="dflow-arrow" aria-hidden="true">→</div>
+              <div className="dflow-cell dflow-cell--result">
+                <div className="dflow-cell-label">What followed</div>
+                <p>{d.result}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -622,11 +1396,14 @@ function Footer() {
               Source files
             </p>
             <ul className="footer-links">
-              <li><a href={`${REPO}/blob/main/BOOK.md`} target="_blank" rel="noopener noreferrer">BOOK.md — full narrative</a></li>
-              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-a-decisions-index`} target="_blank" rel="noopener noreferrer">BOOK.md Appendix A — every judgment call</a></li>
-              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-b-extensions-status`} target="_blank" rel="noopener noreferrer">BOOK.md Appendix B — built vs described-only</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md`} target="_blank" rel="noopener noreferrer">BOOK.md — the full teaching version, 21 chapters</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#8-statistics-from-scratch-then-significancepy`} target="_blank" rel="noopener noreferrer">Ch. 8 — statistics from scratch (p-values, MDE, power)</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-a-decisions-index`} target="_blank" rel="noopener noreferrer">Appendix A — every judgment call</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-b-extensions-status`} target="_blank" rel="noopener noreferrer">Appendix B — built vs described-only</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-c-reading-the-python`} target="_blank" rel="noopener noreferrer">Appendix C — reading the Python</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-e-reproducing-every-number`} target="_blank" rel="noopener noreferrer">Appendix E — reproducing every number</a></li>
+              <li><a href={`${REPO}/blob/main/BOOK.md#appendix-f-research-notes-literature-and-side-investigations`} target="_blank" rel="noopener noreferrer">Appendix F — research notes and literature</a></li>
               <li><a href={`${REPO}/blob/main/PART3_THINKING.md`} target="_blank" rel="noopener noreferrer">PART3_THINKING.md — written answers</a></li>
-              <li><a href={`${REPO}/blob/main/README.md#where-the-assignments-requirements-live`} target="_blank" rel="noopener noreferrer">README.md — requirement map</a></li>
               <li><a href={`${REPO}/tree/main/src/erw`} target="_blank" rel="noopener noreferrer">src/erw/ — all 27 modules</a></li>
               <li><a href={`${REPO}/tree/main/tests`} target="_blank" rel="noopener noreferrer">tests/ — 15 passing tests</a></li>
             </ul>
@@ -648,11 +1425,16 @@ export default function Page() {
       <main>
         <Hero />
         <AskStrip />
+        <Dashboard />
+        <HowItWorks />
         <Part1 />
         <Part2 />
         <Finding />
+        <Confound />
+        <Research />
         <Extensions />
         <DigitalTwin />
+        <Part3 />
         <KeyDecisions />
       </main>
       <Footer />
